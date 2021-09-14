@@ -1,0 +1,21 @@
+a = 1;
+b = 2;
+x0 = [1;1];
+
+tspan = 0:0.2:500;
+u_fun = @(x,y) 1 - (b+1).*x + a.*x.*x.*y;
+v_fun = @(x,y) b.*x - a.*x.*x.*y;
+ode = @(t,x) [
+    u_fun;
+    v_fun;
+    ];
+options = odeset('RelTol', 1e-6, 'AbsTol', 1e-4);
+[t,x] = ode45(ode,tspan,x0,options);
+plot(t,x);
+
+FP = [1;b/a];
+figure;
+xspan = 0:0.01:2;
+yspan = 0:0.01:2;
+u = u_fun(
+quiver(xspan,yspan,
