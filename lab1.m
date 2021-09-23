@@ -11,7 +11,10 @@ ode = @(t,x) [
     ];
 
 options = odeset('RelTol', 1e-6, 'AbsTol', 1e-4);
+disp("ODE45");
 [t,x] = ode45(ode, [0, 1000], x0, options);
+disp("ODE23S");
+SOL23s = ode23s(ode, [0, 1000], x0, options);
 
 plot(t,x);
 legend("Rabbits", "Foxes");
@@ -168,30 +171,36 @@ d = 0.9;
 iters = 500000;
 x0 = [600;400];
 
-x = zeros(iters+1,2);
-x(1,:) = x0;
-for i = 1:iters
-    index = i+1;
-    k = [a*x(i,1),b*x(i,1)*x(i,2),d*x(i,2)];
-    r0 = rand();
-    dt = -(1/sum(k))*log(r0);
-    r1 = rand();
-    
-    x(index,:) = x(i,:);
-    
-    if r1 < k(1)/sum(k)
-        x(index,1) = x(i,1) + 1;
-    elseif r1 < (k(1) + k(2))/sum(k)
-        x(index,2) = x(i,2) + 1;
-        x(index,1) = x(i,1) - 1;
-    else
-       x(index,2) = x(i,2) - 1; 
+x_avg = zeros(iters+1,2);
+avgs = 20;
+for avg = 1:avgs
+    x = zeros(iters+1,2);
+    x(1,:) = x0;
+    for i = 1:iters
+        index = i+1;
+        k = [a*x(i,1),b*x(i,1)*x(i,2),d*x(i,2)];
+        r0 = rand();
+        dt = -(1/sum(k))*log(r0);
+        r1 = rand();
+
+        x(index,:) = x(i,:);
+
+        if r1 < k(1)/sum(k)
+            x(index,1) = x(i,1) + 1;
+        elseif r1 < (k(1) + k(2))/sum(k)
+            x(index,2) = x(i,2) + 1;
+            x(index,1) = x(i,1) - 1;
+        else
+           x(index,2) = x(i,2) - 1; 
+        end
     end
+    x_avg = x_avg + x;
 end
-plot(1:iters+1, x);
+x_avg = x_avg ./ avgs;
+plot(1:iters+1, x_avg);
 legend("Rabbits", "Foxes");
 figure;
-plot(x(:,1),x(:,2));
+plot(x_avg(:,1),x_avg(:,2));
 
 %% heatmap
 a = 0.4;
@@ -200,11 +209,11 @@ d = 0.9;
 
 iters = 500000;
 start_rabbits = 100;
-max_rabbits = 1800;
+max_rabbits = 1000;
 start_foxes = 100;
-max_foxes = 1200;
-delta_rabbit = 200;
-delta_fox = 200;
+max_foxes = 1000;
+delta_rabbit = 50;
+delta_fox = 50;
 
 rabbit_iter_count = ceil((max_rabbits-start_rabbits)/delta_rabbit);
 fox_iter_count = ceil((max_foxes-start_foxes)/delta_fox);
@@ -240,6 +249,8 @@ for r = 1:size_x0(1)
         for avg = 1:avgs
             x = zeros(iters+1,2);
             x(1,:) = x0(r,c,:);
+            
+            end_index = 0;
             for i = 1:iters
                 index = i+1;
                 k = [a*x(i,1),b*x(i,1)*x(i,2),d*x(i,2)];
@@ -258,12 +269,13 @@ for r = 1:size_x0(1)
                    x(index,2) = x(i,2) - 1; 
                 end
                 
+                end_index = index;
                 if x(index,2) < 1e-7
                     break;
                 end
             end
             
-            if x(end,2) < 1e-7
+            if x(end_index,2) < 1e-7
                fox_die_matrix(r,c) = fox_die_matrix(r,c) + 1; 
             end
         end

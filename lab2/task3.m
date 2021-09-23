@@ -7,6 +7,7 @@ plot(g,'Layout','force');
 
 % avg population per node
 rho = 1;
+rho = max(rho,1.5);
 
 pop = zeros(g.numnodes,1);
 for i = 1:g.numnodes
@@ -14,6 +15,13 @@ for i = 1:g.numnodes
     pop(i) = population;
 end
 g.Nodes.Population = pop;
+
+
+num_nodes_of_deg = zeros(max(degree(g)),1);
+for j = 1:g.numnodes
+    deg = degree(g,j); 
+    num_nodes_of_deg(deg) = num_nodes_of_deg(deg) + 1;
+end
 
 figure;
 for i = 1:500
@@ -37,7 +45,7 @@ for i = 1:500
     end
 
     for j = 1:size(rho_k,2)
-       rho_k(j) = (pop_per_deg(j)./mean(degree(g)))*rho;
+       rho_k(j) = pop_per_deg(j)./num_nodes_of_deg(j);
     end
     
     if mod(i,10) == 0
@@ -47,13 +55,7 @@ for i = 1:500
     end
 end
 
-pop_per_deg = zeros(max(degree(g)),1);
-rho_k = zeros(1,size(pop_per_deg,1));
-for i = 1:g.numnodes
-   deg = degree(g,i); 
-   pop_per_deg(deg) = pop_per_deg(deg) + g.Nodes.Population(i);
-end
-
-for i = 1:size(rho_k,2)
-   rho_k(i) = (pop_per_deg(i)./mean(degree(g)))*rho;
+expected_rho_k = zeros(max(degree(g)), 1);
+for j = 1:size(rho_k,2)
+   expected_rho_k(j) = (j./mean(degree(g)))*rho;
 end
