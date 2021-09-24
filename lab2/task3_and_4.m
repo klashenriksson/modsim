@@ -112,7 +112,9 @@ g.Nodes.Population = pop;
 mu = 2;
 beta = 1;
 
-final_net = stoch_sim_over_network(g, W, mu, beta, 0, 50, 2000);
+tic
+final_net = stoch_sim_over_network(g, mu, beta, 0, 50, 2000);
+toc
 figure;
 
 many_infected_nodes = [];
@@ -128,78 +130,81 @@ end
 p = plot(final_net);
 highlight(p, many_infected_nodes);
 
-function final_net = stoch_sim_over_network(net, adj_mat, mu,beta, t_start, t_end, iterations)
+function final_net = stoch_sim_over_network(net, mu,beta, t_start, t_end, iterations)
     figure;
-    dt = (t_start-t_end)./iterations;
-    
+    dt = (t_end-t_start)./iterations;
     t = zeros(1,iterations);
-    
     old_net = net;
     t(1) = t_start;
+    adj_mat = net.adjacency;
+
+    i = net.Nodes.I;
+    s = net.Nodes.S;
     for iter = 2:iterations
-        final_net = stoch_sim_iteration(old_net, mu, beta, dt);
-        final_net = diffuse_network_iteration(final_net, adj_mat);
+        [i,s] = stoch_sim_iteration(i,s,mu,beta,dt);
+        [i,s] = diffuse_network_iteration(i, s, adj_mat);
         t(iter) = t(iter-1) + dt;
         
-        if mod(iter, 10) == 0
-            plot(t(iter), sum(final_net.Nodes.I)/sum(final_net.Nodes.Population),'*');
-            hold on
-        end
+       % if mod(iter, 10) == 0
+       %     plot(t(iter), sum(i)/sum(i+s),'*');
+       %     hold on
+       % end
     end
+
+    final_net = net;
+    final_net.Nodes.Population = i+s;
+    final_net.Nodes.I = i;
+    final_net.Nodes.S = s;
 end
 
-function final_net = diffuse_network_iteration(net, adj_mat)
-    p = zeros(size(net.Nodes.Population, 1), 1);
-    new_i = p;
-    new_s = p;
-    for n = 1:net.numnodes
+function [I,S] = diffuse_network_iteration(i,s,adj_mat)
+    p = i + s;
+    numnodes = numel(p);
+    I = zeros(numnodes, 1);
+    S = zeros(numnodes, 1);
+    for n = 1:numnodes
         curr_neighbors = find(adj_mat(n,:) == 1);
+        num_neighbors = numel(curr_neighbors);
         
         transfered_i = 0;
         transfered_s = 0;
-        for individual = 1:net.Nodes.Population(n)
-            neighbor_index = randi(numel(curr_neighbors));
+        for individual = 1:p(n)
+            neighbor_index = randi(num_neighbors);
             nbor = curr_neighbors(neighbor_index);
-            p(nbor) = p(nbor) + 1;
             
-            if transfered_i ~= net.Nodes.I(n)
-                new_i(nbor) = new_i(nbor) + 1;
+            if transfered_i ~= i(n)
+                I(nbor) = I(nbor) + 1;
                 transfered_i = transfered_i + 1; 
-            elseif transfered_s ~= net.Nodes.S(n)
-                new_s(nbor) = new_s(nbor) + 1;
+            elseif transfered_s ~= s(n)
+                S(nbor) = S(nbor) + 1;
                 transfered_s = transfered_s + 1; 
             end
         end
     end
-    
-    final_net = net;
-    final_net.Nodes.Population = p;
-    final_net.Nodes.I = new_i;
-    final_net.Nodes.S = new_s;
 end
 
-function final_net = stoch_sim_iteration(net, mu, beta, dt)
-    final_net = net;
-    for n_id = 1:net.numnodes
-        i = net.Nodes.I(n_id);
-        s = net.Nodes.S(n_id);
+function [i,s] = stoch_sim_iteration(i,s,mu, beta, dt)
+    numnodes = numel(i);
+    for n_id = 1:numnodes
+        num_i = i(n_id);
+        num_s = s(n_id);
         
         k_i_to_s = mu*dt;
         k_s_to_i = 1 - (1-beta*dt).^i;
         
-        for infected = 1:i
+        for infected = 1:num_i
            r = rand();
            if r < k_i_to_s
-              final_net.Nodes.I(n_id) = final_net.Nodes.I(n_id) - 1;
-              final_net.Nodes.S(n_id) = final_net.Nodes.S(n_id) + 1;
+              i(n_id) = i(n_id) - 1;
+              s(n_id) = s(n_id) + 1;
            end
         end
         
-        for susp = 1:s
+        for susp = 1:num_s
             r = rand();
             if r < k_s_to_i
-               final_net.Nodes.S(n_id) = final_net.Nodes.S(n_id) - 1;
-               final_net.Nodes.I(n_id) = final_net.Nodes.S(n_id) + 1;
+               s(n_id) = s(n_id) - 1;
+               i(n_id) = i(n_id) + 1;
             end
         end
         
