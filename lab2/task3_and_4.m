@@ -5,7 +5,7 @@ W(W ~= 0) = 1;
 g = graph(W);
 
 % avg population per node
-rho = 2;
+rho = 200;
 rho = max(rho,1.5);
 %%
 pop = zeros(g.numnodes,1);
@@ -84,27 +84,31 @@ for i = 1:g.numnodes
     pop(i) = round(population);
 end
 
-initial_infected_fraction = 0.2;
+initial_infected_fraction = 0.5;
 
 g.Nodes.S = pop;
 g.Nodes.I = zeros(size(pop,1),1);
 
 num_infected = 0;
 no_susp_node = [];
-while num_infected ~= round(initial_infected_fraction*sum(pop))
+intially_infected = round(initial_infected_fraction*sum(pop));
+while num_infected ~= intially_infected
     node = randi(g.numnodes);
     if find(no_susp_node == node) ~= 0
        continue; 
     end
+
+    infects_left = intially_infected - num_infected;
+    infect_count = min(min(g.Nodes.S(node), randi(rho), infects_left);
     
-    g.Nodes.I(node) = g.Nodes.I(node) + 1;
-    g.Nodes.S(node) = g.Nodes.S(node) - 1;
+    g.Nodes.I(node) = g.Nodes.I(node) + infect_count;
+    g.Nodes.S(node) = g.Nodes.S(node) - infect_count;
     
     if g.Nodes.S(node) == 0
         no_susp_node(end+1) = node;
     end
     
-    num_infected = num_infected + 1;
+    num_infected = num_infected + infect_count;
 end
 
 g.Nodes.Population = pop;
@@ -112,9 +116,7 @@ g.Nodes.Population = pop;
 mu = 2;
 beta = 1;
 
-tic
 final_net = stoch_sim_over_network(g, mu, beta, 0, 50, 2000);
-toc
 figure;
 
 many_infected_nodes = [];

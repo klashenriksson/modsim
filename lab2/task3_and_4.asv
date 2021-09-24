@@ -5,7 +5,7 @@ W(W ~= 0) = 1;
 g = graph(W);
 
 % avg population per node
-rho = 2;
+rho = 200;
 rho = max(rho,1.5);
 %%
 pop = zeros(g.numnodes,1);
@@ -84,7 +84,7 @@ for i = 1:g.numnodes
     pop(i) = round(population);
 end
 
-initial_infected_fraction = 0.2;
+initial_infected_fraction = 0.5;
 
 g.Nodes.S = pop;
 g.Nodes.I = zeros(size(pop,1),1);
@@ -96,15 +96,17 @@ while num_infected ~= round(initial_infected_fraction*sum(pop))
     if find(no_susp_node == node) ~= 0
        continue; 
     end
+
+    infect_count = min(g.Nodes.S(node), randi(rho));
     
-    g.Nodes.I(node) = g.Nodes.I(node) + 1;
-    g.Nodes.S(node) = g.Nodes.S(node) - 1;
+    g.Nodes.I(node) = g.Nodes.I(node) + infect_count;
+    g.Nodes.S(node) = g.Nodes.S(node) - infect_count;
     
     if g.Nodes.S(node) == 0
         no_susp_node(end+1) = node;
     end
     
-    num_infected = num_infected + 1;
+    num_infected = num_infected + infect_count;
 end
 
 g.Nodes.Population = pop;
@@ -130,7 +132,7 @@ highlight(p, many_infected_nodes);
 
 function final_net = stoch_sim_over_network(net, mu,beta, t_start, t_end, iterations)
     figure;
-    dt = (t_end-t_end)./iterations;
+    dt = (t_end-t_start)./iterations;
     t = zeros(1,iterations);
     old_net = net;
     t(1) = t_start;
@@ -151,22 +153,23 @@ function final_net = stoch_sim_over_network(net, mu,beta, t_start, t_end, iterat
 
     final_net = net;
     final_net.Nodes.Population = i+s;
-    final_net.I = i;
-    final_net.S = s;
+    final_net.Nodes.I = i;
+    final_net.Nodes.S = s;
 end
 
 function [I,S] = diffuse_network_iteration(i,s,adj_mat)
     p = i + s;
-    I = p;
-    S = p;
     numnodes = numel(p);
+    I = zeros(numnodes, 1);
+    S = zeros(numnodes, 1);
     for n = 1:numnodes
         curr_neighbors = find(adj_mat(n,:) == 1);
+        num_neighbors = numel(curr_neighbors);
         
         transfered_i = 0;
         transfered_s = 0;
         for individual = 1:p(n)
-            neighbor_index = randi(numel(curr_neighbors));
+            neighbor_index = randi(num_neighbors);
             nbor = curr_neighbors(neighbor_index);
             
             if transfered_i ~= i(n)
