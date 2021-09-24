@@ -3,7 +3,6 @@ W = load("nets/pownet_N100_gamma-2.5.mat");
 W = W.W;
 W(W ~= 0) = 1;
 g = graph(W);
-plot(g,'Layout','force');
 
 % avg population per node
 rho = 2;
@@ -23,39 +22,21 @@ for j = 1:g.numnodes
     num_nodes_of_deg(deg) = num_nodes_of_deg(deg) + 1;
 end
 
-for i = 1:2900
+old_pop = g.Nodes.Population;
+for i = 1:4000
     new_pop = zeros(g.numnodes,1);
     
     for n = 1:g.numnodes
-        curr_neighbors = neighbors(g,n);
-        for p = 1:g.Nodes.Population(n)
-            neighbor_index = randi(size(curr_neighbors,1));
+        curr_neighbors = find(W(n,:) == 1);
+        for p = 1:old_pop(n)
+            neighbor_index = randi(size(curr_neighbors,2));
             new_pop(curr_neighbors(neighbor_index)) = new_pop(curr_neighbors(neighbor_index)) + 1;
         end
     end
     
-    g.Nodes.Population = new_pop;
-    
-    if mod(i,10) == 0
-%         pop_per_deg = zeros(max(degree(g)),1);
-%         rho_k = zeros(1,size(pop_per_deg,1));
-%         for j = 1:g.numnodes
-%            deg = degree(g,j); 
-%            pop_per_deg(deg) = pop_per_deg(deg) + g.Nodes.Population(j);
-%         end
-% 
-%         for j = 1:size(rho_k,2)
-%             if num_nodes_of_deg(j) == 0
-%                 rho_k(j) = 0;
-%             else
-%                 rho_k(j) = pop_per_deg(j)./num_nodes_of_deg(j);
-%             end
-%         end
-        %hold on
-        %plot(i,rho_k(2),'*');
-        %disp("I: " + i + " RHO_K: " + rho_k(3));
-    end
+    old_pop = new_pop;
 end
+g.Nodes.Population = new_pop;
 
 %% task 4
 pop_per_deg = zeros(max(degree(g)),1);
@@ -131,7 +112,7 @@ g.Nodes.Population = pop;
 mu = 2;
 beta = 1;
 
-final_net = stoch_sim_over_network(g, mu, beta, 0, 5, 0.02);
+final_net = stoch_sim_over_network(g, mu, beta, 0, 50, 0.02);
 figure;
 
 many_infected_nodes = [];
@@ -147,10 +128,11 @@ end
 p = plot(final_net);
 highlight(p, many_infected_nodes);
 
-function final_net = stoch_sim_over_network(net,mu,beta, t_start, t_end, dt)
-    max_iters = (t_end-t_start)/dt;
+function final_net = stoch_sim_over_network(net,mu,beta, t_start, t_end, iterations)
+    figure;
+    dt = (t_start-t_end)/iterations;
     
-    t = zeros(1,max_iters);
+    t = zeros(1,iterations);
     
     old_net = net;
     t(1) = t_start;
@@ -160,22 +142,23 @@ function final_net = stoch_sim_over_network(net,mu,beta, t_start, t_end, dt)
         t(iter) = t(iter-1) + dt;
         
         if mod(iter, 10) == 0
-            
+            plot(t(iter), sum(final_net.Nodes.I)/sum(final_net.Nodes.Population),'*');
+            hold on
         end
     end
 end
 
-function final_net = diffuse_network_iteration(net)
+function final_net = diffuse_network_iteration(net, adj_mat)
     p = zeros(size(net.Nodes.Population, 1), 1);
     new_i = p;
     new_s = p;
     for n = 1:net.numnodes
-        curr_neighbors = neighbors(net,n);
+        curr_neighbors = find(adj_mat(n,:) == 1);
         
         transfered_i = 0;
         transfered_s = 0;
         for individual = 1:net.Nodes.Population(n)
-            neighbor_index = randi(size(curr_neighbors,1));
+            neighbor_index = randi(numel(curr_neighbors));
             nbor = curr_neighbors(neighbor_index);
             p(nbor) = p(nbor) + 1;
             
