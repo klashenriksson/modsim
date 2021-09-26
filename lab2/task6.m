@@ -37,7 +37,7 @@ for i = 1:rho_iters
     
     g10_2 = stoch_sim_over_network(g10_2, mu,beta, 0, t_end, iters, "", "Group");
     g10_3 = stoch_sim_over_network(g10_3, mu,beta, 0, t_end, iters, "", "Group");
-    g10_4 = stoch_sim_over_network(g10_4, mu,beta, 0, t_end, iters, "", "Group");
+    g10_4 = stoch_sim_over_network(g10_4, mu,beta, 0, t_end, iters/10, "", "Group");
     
     plot(sum(g10_2.Nodes.Population), sum(g10_2.Nodes.I)./sum(g10_2.Nodes.Population),'r*');
     hold on
