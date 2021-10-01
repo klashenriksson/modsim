@@ -1,4 +1,4 @@
-function [i,s] = stoch_sim_iteration(i,s,mu, beta, dt)
+function [i,s] = stoch_sim_iteration_group_spread(i,s,mu, beta, dt)
     numnodes = numel(i);
     for n_id = 1:numnodes
         num_i = i(n_id);

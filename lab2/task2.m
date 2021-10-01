@@ -1,10 +1,11 @@
-mu = 0.8;
-beta = 0.001;
+close all
+mu = 6;
+beta = 0.01;
 x0 = [900;100];
 tot_pop = sum(x0);
 t_start = 0;
-t_end = 500;
-dt = 0.01;
+t_end = 20;
+dt = 0.0001;
 
 ode = @(t,x) [
     mu*x(2) - beta*x(2)*x(1);
@@ -14,9 +15,12 @@ options = odeset('RelTol', 1e-6, 'AbsTol', 1e-4, 'Stats', 'on');
 
 [t_stoch,x_stoch] = stoch_sim(x0,mu,beta,t_start,t_end,dt);
 [t,x] = ode45(ode, [t_start t_end], x0, options);
-plot(t_stoch,x_stoch);
+plot(t_stoch,x_stoch./sum(x0));
 hold on
-plot(t,x);
+plot(t,x./sum(x0));
+legend("\rho_s stochastic", "\rho_i stochastic", "\rho_s", "\rho_i", "FontSize", 12);
+xlabel("Time", "FontSize", 18);
+ylabel("Ratio", "FontSize", 18);
 
 function [t,x] = stoch_sim(x0,mu,beta, t_start, t_end, dt)
     max_iters = (t_end-t_start)/dt;
