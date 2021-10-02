@@ -5,11 +5,11 @@ ode = @(t,x) [
     mu*x(2) - beta*x(2)*x(1);
     -mu*x(2) + beta*x(1)*x(2);
 ];
-x0 = [900;100];
+x0 = [0.95;0.05];
 tot_pop = sum(x0);
 
-mu = 6;
-beta = 0.01;
+mu = 0.8;
+beta = 1.6;
 
 options = odeset('RelTol', 1e-6, 'AbsTol', 1e-4, 'Stats', 'on');
 SOL = ode45(ode, [0 20], x0, options);

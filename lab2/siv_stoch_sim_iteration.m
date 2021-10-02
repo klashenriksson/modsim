@@ -1,4 +1,4 @@
-function [i,s] = stoch_sim_iteration(i,s,mu, beta, dt, opt)
+function [i,s,v] = siv_stoch_sim_iteration(i,s,v,mu, beta, gamma, dt, opt)
     if ~exist('opt', 'var')
         opt = "";
     end
@@ -26,13 +26,19 @@ function [i,s] = stoch_sim_iteration(i,s,mu, beta, dt, opt)
         
         k_i_to_s = mu*dt;
         k_s_to_i = 1 - (1-beta_i*dt).^num_i;
+        k_to_v = gamma*dt;
         
         for infected = 1:num_i
            r = rand();
            if r < k_i_to_s
               i(n_id) = i(n_id) - 1;
               s(n_id) = s(n_id) + 1;
-           end
+           else
+               r = rand();
+               if r < k_to_v
+                   i(n_id) = i(n_id) - 1;
+                   v(n_id) = v(n_id) + 1;
+               end
         end
         
         for susp = 1:num_s
@@ -40,6 +46,12 @@ function [i,s] = stoch_sim_iteration(i,s,mu, beta, dt, opt)
             if r < k_s_to_i
                s(n_id) = s(n_id) - 1;
                i(n_id) = i(n_id) + 1;
+            else
+                r = rand();
+                if r < k_to_v
+                    s(n_id) = s(n_id) - 1;
+                    v(n_id) = v(n_id) + 1;
+                end
             end
         end
         

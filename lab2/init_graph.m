@@ -19,7 +19,8 @@ function g = init_graph(g,rho, infected_fraction)
     intially_infected = round(infected_fraction*sum(pop));
     
     nonzero_node_ids = [];
-    for i = 1:g.numnodes
+    numnodes = g.numnodes;
+    for i = 1:numnodes
         if g.Nodes.Population(i) > 0
             nonzero_node_ids(end+1) = i;
         end
@@ -32,7 +33,7 @@ function g = init_graph(g,rho, infected_fraction)
         end
     
         infects_left = intially_infected - num_infected;
-        infect_count = 1;%min(min(g.Nodes.S(node), randi(rho)), infects_left);
+        infect_count = min(min(g.Nodes.S(node), 4), infects_left);
         
         g.Nodes.I(node) = g.Nodes.I(node) + infect_count;
         g.Nodes.S(node) = g.Nodes.S(node) - infect_count;

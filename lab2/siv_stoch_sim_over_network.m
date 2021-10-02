@@ -1,4 +1,4 @@
-function final_net = stoch_sim_over_network(net, mu,beta, t_start, t_end, iterations, diffuse_ans, spread_ans)
+function final_net = siv_stoch_sim_over_network(net, mu,beta, gamma, t_start, t_end, iterations, diffuse_ans, spread_ans)
 
     if ~exist('diffuse_ans', 'var')
         diffuse_ans = '';
@@ -25,23 +25,18 @@ function final_net = stoch_sim_over_network(net, mu,beta, t_start, t_end, iterat
 
     i = net.Nodes.I;
     s = net.Nodes.S;
-
-    %plot(sum(i+s), sum(i)/sum(i+s),'*');
+    v = net.Nodes.V;
 
     for iter = 2:iterations
-        [i,s] = stoch_sim_iteration(i,s,mu,beta,dt,spread_ans);
-        [i,s] = diffuse_network_iteration(i, s, neighbor_list, neighbor_length_list, diffuse_ans);
+        [i,s,v] = siv_stoch_sim_iteration(i,s,v,mu,beta,gamma, dt,spread_ans);
+        [i,s,v] = siv_diffuse_network_iteration(i, s, v,neighbor_list, neighbor_length_list, diffuse_ans);
         
         t(iter) = t(iter-1) + dt;
-        
-        %if true || mod(i, 10) == 0
-        %    plot(sum(i+s), sum(i)/sum(i+s),'*');
-        %    hold on
-        %end
     end
 
     final_net = net;
-    final_net.Nodes.Population = i+s;
+    final_net.Nodes.Population = i+s+v;
     final_net.Nodes.I = i;
     final_net.Nodes.S = s;
+    final_net.Nodes.V = v;
 end

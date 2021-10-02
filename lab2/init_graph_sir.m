@@ -5,6 +5,7 @@ function g = init_graph_sir(g,rho, infected_fraction, recovered_fraction)
 
     pop = zeros(g.numnodes,1);
     total_population = rho*g.numnodes;
+    
     curr_pop = 0;
     while curr_pop < total_population
         node = randi(g.numnodes);
@@ -14,8 +15,8 @@ function g = init_graph_sir(g,rho, infected_fraction, recovered_fraction)
         curr_pop = curr_pop + 1;
     end
     g.Nodes.Population = pop;
-        
-    g.Nodes.S = zeros(size(pop,1),1);
+    g.Nodes.S = pop;
+
     g.Nodes.R = zeros(size(pop,1),1);
 
     nonzero_node_ids = [];
@@ -26,22 +27,32 @@ function g = init_graph_sir(g,rho, infected_fraction, recovered_fraction)
     end
 
     initially_r = round(recovered_fraction*sum(pop));
+    no_susp_nodes = [];
     num_r = 0;
     while num_r ~= initially_r
         node = nonzero_node_ids(randi(numel(nonzero_node_ids)));
-        
+        if find(no_susp_nodes == node) ~= 0
+           continue; 
+        end
 
+        g.Nodes.R(node) = g.Nodes.R(node) + 1;
+        g.Nodes.S(node) = g.Nodes.S(node) - 1;
+
+        if g.Nodes.S(node) == 0
+            no_susp_nodes(end+1) = node;
+        end
+
+        num_r = num_r + 1;
     end
 
     g.Nodes.I = zeros(size(pop,1),1);
     
     num_infected = 0;
-    no_susp_node = [];
     intially_infected = round(infected_fraction*sum(pop));
 
     while num_infected ~= intially_infected
         node = nonzero_node_ids(randi(numel(nonzero_node_ids)));
-        if find(no_susp_node == node) ~= 0
+        if find(no_susp_nodes == node) ~= 0
            continue; 
         end
     
@@ -52,7 +63,7 @@ function g = init_graph_sir(g,rho, infected_fraction, recovered_fraction)
         g.Nodes.S(node) = g.Nodes.S(node) - infect_count;
         
         if g.Nodes.S(node) == 0
-            no_susp_node(end+1) = node;
+            no_susp_nodes(end+1) = node;
         end
         
         num_infected = num_infected + infect_count;
