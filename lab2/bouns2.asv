@@ -1,0 +1,13 @@
+num_countries = 50;
+world_graph = gen_world(num_countries, -2.5, -2.5);
+rho = 2;
+mu = 2;
+beta = 1;
+t_end = 20;
+iters = 200;
+initial_infect_fract = 0.05;
+
+world_graph = init_graph(world_graph,rho,initial_infect_fract);
+world_graph = stoch_sim_over_network(world_)
+
+plot_world_graph(world_graph);

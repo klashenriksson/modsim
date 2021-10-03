@@ -76,6 +76,4 @@ function world_graph = gen_world(num_countries, gamma_countries, gamma_cities)
 
     edge_table = table(world_edges, weights, 'VariableNames', {'EndNodes', 'Weight'});
     world_graph = graph(edge_table);
-    figure;
-    plot(world_graph, 'Layout', 'force');
 end
