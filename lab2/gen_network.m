@@ -17,7 +17,7 @@ function adj_mat = gen_network(num_nodes, gamma)
     curr_idx = 1;
     for n = 1:num_nodes
         dups = node_degrees(n);
-        k_c(curr_idx:curr_idx+dups) = n;
+        k_c(curr_idx:curr_idx+dups-1) = n;
         curr_idx = curr_idx + dups;
     end
 
@@ -29,15 +29,22 @@ function adj_mat = gen_network(num_nodes, gamma)
 %     plot(degs, nodes_per_degs);
 
     adj_mat = zeros(num_nodes, num_nodes);
-    while ~isempty(k_c)
-        n = numel(k_c);
+    max_fail_count = 20;
+
+    num_elems = numel(k_c);
+    while num_elems > 0
         if numel(unique(k_c)) == 1
             break
         end
 
-        while true
-            n1 = randi(n);
-            n2 = randi(n);
+        if num_elems == 2 && adj_mat(k_c(1), k_c(2)) == 1
+            break
+        end
+
+        fail_count = 0;
+        while fail_count < max_fail_count
+            n1 = randi(num_elems);
+            n2 = randi(num_elems);
 
             node_1 = k_c(n1);
             node_2 = k_c(n2);
@@ -45,16 +52,29 @@ function adj_mat = gen_network(num_nodes, gamma)
             if adj_mat(node_1,node_2) ~= 1 && node_1 ~= node_2
                 break;
             end
+
+            fail_count = fail_count + 1;
         end
+
+        if fail_count == max_fail_count
+            break;
+        end
+
         adj_mat(node_1,node_2) = 1;
         adj_mat(node_2, node_1) = 1;
         k_c(n1) = [];
+        num_elems = num_elems -1;
+        if num_elems == 0
+            break;
+        end
 
         if n1 > n2
             k_c(n2) = [];
         else
             k_c(n2-1) = [];
         end
+
+        num_elems = num_elems - 1;
     end
 
     adj_mat = sparse(adj_mat);
