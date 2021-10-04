@@ -182,8 +182,6 @@ void run_simulation(Par *par, double *atoms)
 #ifdef VEL
   printf("Kinetic energy   = %g\n", val->ekin);
 #endif
-  exit(EXIT_SUCCESS);	// Fix this (2)
-
   // Equilibrate
 #ifndef MC
   nstep = rint(1.0 / par->deltat);

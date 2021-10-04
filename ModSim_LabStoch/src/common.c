@@ -29,7 +29,7 @@ double force_magnitude(double r2)
   double r = sqrt(r2);
   double ir2 = 1.0 / r2;
   double ir6 = ir2 * ir2 * ir2;
-  double dudr;
+  double dudr = -ir2 * (48*ir6*ir6 - 24 * ir6);
   // Fix this (2): dudr = 
  return -dudr;
 }
@@ -41,7 +41,11 @@ void one_force(double *f, double r2, double *dist)
 {
   int d;
   double force = force_magnitude(r2);
-  // Fix this (2): split the force up in the different directions
+  double r = sqrt(r2);
+  for (d = 0; d < D; d++)
+  {
+    f[d] = r > 0 ? (dist[d]/r)*force : 0;
+  }
 }
 
 
