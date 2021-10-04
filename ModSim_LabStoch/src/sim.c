@@ -39,8 +39,14 @@ char *get_filename(Par *par)
 
 double standard_error(double x, double x2, int nblock)
 {
-  return 0.0;
-  //  Fix this (4). Calculate and return the standard error
+  if (nblock < 1)
+  {
+    return 0;
+  }
+
+  double numerator = fabs(x2-x*x);
+  double denom = (double)nblock - 1;
+  return sqrt(numerator/denom);
 }
 
 
@@ -188,8 +194,7 @@ void run_simulation(Par *par, double *atoms)
 #endif
    
   step(par, atoms, force);	// Fix this (3)
-  printf("x, y, vx, vy = %g  %g  %g  %g\n", pos[0], pos[1], vel[0], vel[1]);
-  exit(EXIT_SUCCESS);
+  //printf("x, y, vx, vy = %g  %g  %g  %g\n", pos[0], pos[1], vel[0], vel[1]);
   if (par->ntherm) {
     printf("Equilibrate: %d...", par->ntherm);
     fflush(stdout);

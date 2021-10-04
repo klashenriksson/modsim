@@ -29,9 +29,8 @@ double force_magnitude(double r2)
   double r = sqrt(r2);
   double ir2 = 1.0 / r2;
   double ir6 = ir2 * ir2 * ir2;
-  double dudr = -ir2 * (48*ir6*ir6 - 24 * ir6);
-  // Fix this (2): dudr = 
- return -dudr;
+  double dudr = -ir2 * ((48. *ir6*ir6) - (24. * ir6));
+  return -dudr;
 }
 
 // Input:  r2 = distance squared between two particles.
@@ -44,7 +43,7 @@ void one_force(double *f, double r2, double *dist)
   double r = sqrt(r2);
   for (d = 0; d < D; d++)
   {
-    f[d] = r > 0 ? (dist[d]/r)*force : 0;
+    f[d] = r > 0 ? (dist[d]/r)*force : 0.;
   }
 }
 
@@ -114,13 +113,13 @@ void forces_from_pos(Par *par, double *pos, double *force)
       
       r2 = dist2(par->L, ipos, jpos, dist);
       if (r2 < CUT * CUT) {
-	// Each pair of interacting particles should come here
-	// Calculate the force due do this interaction
-	one_force(f, r2, dist);		// Calculate the vector f on the basis of r2 and dist
-	for (d = 0; d < D; d++) {
-	  force[D * i + d] += f[d];
-	  force[D * j + d] -= f[d];
-	}
+  // Each pair of interacting particles should come here
+  // Calculate the force due do this interaction
+  one_force(f, r2, dist);		// Calculate the vector f on the basis of r2 and dist
+  for (d = 0; d < D; d++) {
+    force[D * i + d] += f[d];
+    force[D * j + d] -= f[d];
+  }
       }
     }
   }
@@ -147,7 +146,8 @@ void vel_from_force(Par *par, double *vel, double *force)
 
   for (i = 0; i < par->n; i++) {
     for (d = 0; d < D; d++) {
-   // Fix this (2):   vel[D * i + d] += ...;
+      // Fix this (2):   vel[D * i + d] += ...;
+      vel[D*i + d] += force[D*i + d] * par->deltat;
     }
   }
 }
