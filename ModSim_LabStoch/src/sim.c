@@ -148,7 +148,7 @@ void run_simulation(Par *par, double *atoms)
 #else
     if (par->alpha > 0.0) {
       printf("\n--- Langevin dynamics of a Lennard-Jones gas ---\n\n");
-      // Fix (5)     par->zeta = ...
+      par->zeta = 2 * par->alpha * par->t / par->deltat;
     }
     else
       printf("\n--- Molecular dynamics of a Lennard-Jones gas ---\n\n");
@@ -194,17 +194,17 @@ void run_simulation(Par *par, double *atoms)
 #endif
    
   step(par, atoms, force);	// Fix this (3)
-  //printf("x, y, vx, vy = %g  %g  %g  %g\n", pos[0], pos[1], vel[0], vel[1]);
+  printf("x, y, vx, vy = %g  %g  %g  %g\n", pos[0], pos[1], vel[0], vel[1]);
   if (par->ntherm) {
     printf("Equilibrate: %d...", par->ntherm);
     fflush(stdout);
     for (itherm = 0; itherm < par->ntherm; itherm++) {
-#ifdef MC
-      mc_sweep(par, pos);
-#else    
-      for (istep = 0; istep < nstep; istep++)
-	step(par, atoms, force);
-#endif
+      #ifdef MC
+            mc_sweep(par, pos);
+      #else    
+        for (istep = 0; istep < nstep; istep++)
+          step(par, atoms, force);
+      #endif
     }
     printf("done\n");
   }
