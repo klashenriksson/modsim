@@ -135,9 +135,6 @@ void langevin_forces(Par *par, double *vel, double *force)
   
   for (i = 0; i < par->n; i++)
     for (d = 0; d < D; d++) {
-      // Fix this (5). Use dran_sign() which returns a value between -1 and 1.
-      // Fix this (5):   force[D * i + d] += 0;
-
       double r = dran_sign();
       double vel_term = -par->alpha * vel[D * i + d];
       double noise_term = sqrt(3 * par->zeta) * r;
