@@ -1,13 +1,13 @@
 CC = gcc
 
-CFLAGS = -g -O3 -Wall		# debugging information, optimization level
+CFLAGS = -g -O3		# debugging information, optimization level
 CPPFLAGS = -I.		# Flags to the C preprocessor, here include files from the current directory
 LOADLIBES = -lm		# Libraries to load, here libm - the math library
 VPATH = ../src		# list of directories that make should search
 
 
 # List of object files
-OBJS = sim.o ran.o common.o config.o mc.o
+OBJS = sim.o ran.o common.o config.o
 
 # Implicit rule - link together object files to an executable file
 sim: ${OBJS}
