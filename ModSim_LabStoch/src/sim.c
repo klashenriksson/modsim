@@ -52,9 +52,12 @@ double standard_error(double x, double x2, int nblock)
 
 void print_standard_error(char *str, double x, double x2, int nblock)
 {
-  double s;
+  if (nblock == 0)
+  {
+    printf("%s%g +/- %g\n", str, x, 0.);
+  }
 
-  s = standard_error(x, x2, nblock);
+  double s = standard_error(x / nblock, x2 / nblock, nblock);
   printf("%s%g +/- %g\n", str, x / nblock, s);
   return;
 }
