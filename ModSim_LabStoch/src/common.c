@@ -168,6 +168,22 @@ void pos_from_vel(Par *par, double *pos, double *vel)
 }
 #endif
 
+#ifdef BROWN
+void pos_from_force(Par* par, double* pos, double* force)
+{
+  const double noise_amp = sqrt(2*par->t/(par->alpha*par->deltat));
+  for (int i = 0; i < par->n; i++)
+  {
+    for (int d = 0; d < D; d++)
+    {
+      double noise = noise_amp * sqrt(3) * dran_sign();
+      double newpos = pos[D * i + d] + force[D * i + d]*par->deltat/par->alpha + noise*par->deltat;
+      pos[D * i + d] = inrange(newpos, par->L[d]);
+    }
+  }
+}
+#endif
+
   
 
 
@@ -175,7 +191,6 @@ void pos_from_vel(Par *par, double *pos, double *vel)
 int step(Par *par, double *atoms, double *force)
 {
   double *pos = atoms;
-  
   forces_from_pos(par, pos, force);
 
 #ifdef VEL

@@ -121,7 +121,6 @@ void measure(Par *par, double *atoms, Measured *val)
 
   // pressure = (N * T + virial / Dimensionality) / volume
   val->pressure = (par->n * par->t + virial / D) / par->vol;
-
   return;
 }
 
@@ -146,7 +145,8 @@ void run_simulation(Par *par, double *atoms)
   double epot, ekin, pressure;
   
 #ifdef MC
-    printf("Gas with %d particles at T = %g, rho = %g, L = %5.3f,  b = %g\n", par->n, par->t,
+  double naccept = 0;
+  printf("Gas with %d particles at T = %g, rho = %g, L = %5.3f,  b = %g\n", par->n, par->t,
 	   par->rho, par->L[0], par->b);
 #else
     if (par->alpha > 0.0) {
@@ -189,15 +189,15 @@ void run_simulation(Par *par, double *atoms)
   measure(par, atoms, val);
   printf("Potential energy = %g\n", val->epot);
 #ifdef VEL
+
   printf("Kinetic energy   = %g\n", val->ekin);
 #endif
   // Equilibrate
 #ifndef MC
   nstep = rint(1.0 / par->deltat);
 #endif
-   
   step(par, atoms, force);	// Fix this (3)
-  printf("x, y, vx, vy = %g  %g  %g  %g\n", pos[0], pos[1], vel[0], vel[1]);
+  //printf("x, y, vx, vy = %g  %g  %g  %g\n", pos[0], pos[1], vel[0], vel[1]);
   if (par->ntherm) {
     printf("Equilibrate: %d...", par->ntherm);
     fflush(stdout);
@@ -241,7 +241,7 @@ void run_simulation(Par *par, double *atoms)
      measure(par, atoms, val);
 
      if (isamp % 100 == 0)	// Write energy from a single measurement, but not too often
-	energy_print(estream, isamp + par->nsamp * iblock, val);
+	    energy_print(estream, isamp + par->nsamp * iblock, val);
 
       vsum->epot += val->epot;
       vsum->pressure += val->pressure;
