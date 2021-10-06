@@ -5,13 +5,13 @@ Generate a simple starting configuration
 Gas with 64 particles at rho = 0.6, T = 1, alpha = 1, deltat = 0.01, L = 10.328
 Potential energy = -1.56463
 Kinetic energy   = 1
-x, y, vx, vy = 0.652199  0.657706  0.670193  1.22092
+x, y, vx, vy = 0.638705  0.631883  -0.679262  -1.36137
 Equilibrate: 1000...done
 
 Simulate 10 blocks x 1000 samples each: 1 2 3 4 5 6 7 8 9 10 
 Configuration with 64 particles written to conf/0064_r0.600_T1.000_alpha1.00_dt010
-Potential E: -1.5654 +/- 0.00102636
-Kinetic  E : 1.01018 +/- 0.00129067
-Total  E   : -0.555218 +/- 0.00135344
-Pressure   : 0.943827 +/- 0.00373072
+Potential E: -1.56492 +/- 0.000618946
+Kinetic  E : 1.01034 +/- 0.00193674
+Total  E   : -0.554575 +/- 0.00224358
+Pressure   : 0.938878 +/- 0.00414525
 Pressure for ideal gas: 0.6

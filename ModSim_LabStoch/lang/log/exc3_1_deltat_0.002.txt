@@ -8,4 +8,10 @@ Kinetic energy   = 1.04104
 x, y, vx, vy = 3.78925  9.79922  -0.186227  -1.55369
 Equilibrate: 1000...done
 
-Simulate 50 blocks x 1000 samples each: 1 2 3 4 5 
+Simulate 50 blocks x 1000 samples each: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 
+Configuration with 64 particles written to conf/0064_r0.500_T1.000_alpha0.00_dt002
+Potential E: -1.29977 +/- 0.00027417
+Kinetic  E : 1.00009 +/- 0.000264836
+Total  E   : -0.299671 +/- 5.67969e-05
+Pressure   : 0.582257 +/- 0.00150305
+Pressure for ideal gas: 0.5
