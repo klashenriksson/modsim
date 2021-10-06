@@ -1,4 +1,4 @@
-function world_graph = gen_world(num_countries, gamma_countries, gamma_cities)
+function [world_graph, country_data] = gen_world(num_countries, gamma_countries, gamma_cities)
     country_adj_mat = gen_network(num_countries, gamma_countries);
     country_graph = graph(country_adj_mat);
     total_connections = numedges(country_graph);
@@ -13,9 +13,12 @@ function world_graph = gen_world(num_countries, gamma_countries, gamma_cities)
 
     total_nodes = 0;
     max_city_count = 0;
+
+    city_count = zeros(num_countries, 1);
     for n = 1:num_cntries
         num_cities = degs(n)*deg_factor;
         max_city_count = max(num_cities, max_city_count);
+        city_count(n) = num_cities;
 
         city_net = gen_network(num_cities, gamma_cities);
         city_graph = graph(city_net);
@@ -50,6 +53,10 @@ function world_graph = gen_world(num_countries, gamma_countries, gamma_cities)
         country_offset = country_offset + num_nodes;
         
     end
+
+    country_data.offsets = country_offsets;
+    country_data.city_count = city_count;
+    country_data.n_countries = num_countries;
 
     % connect the largest cities
     cntry_edges = world.cntry_graph.Edges.EndNodes;

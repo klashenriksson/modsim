@@ -1,13 +1,38 @@
-num_countries = 50;
-world_graph = gen_world(num_countries, -2.5, -2.5);
-rho = 2;
+num_countries = 100;
+[world_graph, country_data] = gen_world(num_countries, -2.5, -2.5);
+rho = 200;
 mu = 2;
+gamma = 2;
 beta = 1;
-t_end = 20;
-iters = 200;
+t_end = 1;
+iters = 50;
 initial_infect_fract = 0.05;
 
 world_graph = init_graph(world_graph,rho,initial_infect_fract);
-world_graph = stoch_sim_over_network(world_)
 
+is_spec_country = zeros(world_graph.numnodes,1);
+max_cities = max(country_data.city_count);
+
+offset = 0;
+for i = 1:country_data.n_countries
+    if country_data.city_count(
+        for n = 1:country_data.city_count
+            n_id = n + offset;
+            is_spec_country(n_id) = 1;
+        end
+    end
+
+    offset = offset + country_data.city_count(i);
+end
+world_graph.Nodes.IBC = is_spec_country;
+%%
+world_graph = stoch_sim_over_network_world(world_graph, mu, beta, 0, t_end, iters, "LockdownBigCountry", "");
+%%
+plot_world_graph(world_graph);
+
+%% viz
+num_countries = 10;
+world_graph = gen_world(num_countries, -2.5, 2.5);
+
+world_graph = init_graph(world_graph, 200, 0);
 plot_world_graph(world_graph);

@@ -39,6 +39,7 @@ function [i,s,v] = siv_stoch_sim_iteration(i,s,v,mu, beta, gamma, dt, opt)
                    i(n_id) = i(n_id) - 1;
                    v(n_id) = v(n_id) + 1;
                end
+           end
         end
         
         for susp = 1:num_s

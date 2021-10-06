@@ -45,9 +45,9 @@ ylabel("X_1", "FontSize", 18);
 %% part 2
 close all
 clear
-delta = 1e-15;
+delta = 24 * pi;
 x0_1 = [3;pi;pi];
-x0_2 = x0_1 + [delta; 0; 0];
+x0_2 = x0_1 + [delta; delta; 0];
 beta = 8/3;
 rho = 50;
 sigma = 10;

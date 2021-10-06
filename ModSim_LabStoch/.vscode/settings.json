@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "define.h": "c",
+        "complex": "c",
+        "algorithm": "c"
+    }
+}

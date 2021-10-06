@@ -1,6 +1,6 @@
 %% task 1 a
 close all
-x0 = [600;400];
+x0 = [600;4];
 a = 0.4;
 b = 0.001;
 c = 0.001;
@@ -130,8 +130,14 @@ a = 0.4;
 b = 0.001;
 d = 0.9;
 
+ode = @(t,x) [
+    a*x(1) - b*x(1)*x(2);
+    b*x(1)*x(2) - d*x(2);
+    ];
+
 iters = 400000;
 x0 = [600;400];
+[t,x_sol] = ode45(ode, [0, 400], x0);
 
 x = zeros(iters+1,2);
 x(1,:) = x0;
@@ -159,9 +165,14 @@ end
 plot(time, x(:,1));
 hold on
 plot(time, x(:,2));
-legend("Rabbits", "Foxes");
+hold on
+plot(t,x_sol, 'MarkerSize', 3);
+legend("Stochastic Rabbits", "Stochastic Foxes", "ODE Rabbits", "ODE Foxes");
 figure;
 plot(x(:,1),x(:,2));
+hold on
+plot(x_sol(:,1), x_sol(:,2));
+legend("Stochastic", "ODE");
 
 %% bonus 2 - extinct if b*x(1,1) < 1??
 a = 0.4;

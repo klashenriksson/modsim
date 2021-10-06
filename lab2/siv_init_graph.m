@@ -3,11 +3,12 @@ function g = siv_init_graph(g,rho, infected_fraction)
         error("Infect. fract. cant be greater than 1.");
     end
 
-    pop = zeros(g.numnodes,1);
+    numnodes = g.numnodes;
+    pop = zeros(numnodes,1);
     total_population = rho*g.numnodes;
     curr_pop = 0;
     while curr_pop < total_population
-        node = randi(g.numnodes);
+        node = randi(numnodes);
     
         %pop_left = total_population-curr_pop;
         pop(node) = pop(node) + 1;

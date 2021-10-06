@@ -1,0 +1,17 @@
+Generate a simple starting configuration
+
+--- Langevin dynamics of a Lennard-Jones gas ---
+
+Gas with 64 particles at rho = 0.6, T = 1, alpha = 0.1, deltat = 0.01, L = 10.328
+Potential energy = -1.56463
+Kinetic energy   = 1
+x, y, vx, vy = 0.651632  0.656203  0.613475  1.07062
+Equilibrate: 1000...done
+
+Simulate 10 blocks x 1000 samples each: 1 2 3 4 5 6 7 8 9 10 
+Configuration with 64 particles written to conf/0064_r0.600_T1.000_alpha0.10_dt010
+Potential E: -1.5659 +/- 0.000858146
+Kinetic  E : 1.00096 +/- 0.00267441
+Total  E   : -0.564938 +/- 0.0032532
+Pressure   : 0.941092 +/- 0.00328323
+Pressure for ideal gas: 0.6
