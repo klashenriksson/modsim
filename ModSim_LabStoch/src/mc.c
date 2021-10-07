@@ -9,7 +9,6 @@ int mc_sweep(Par *par, double *pos)
 {
     double newpos[D];
     double dist[D];
-    double new_positions[D*par->n];
     int naccept = 0;
 
     for (int i = 0; i < par->n; i++)
@@ -50,19 +49,11 @@ int mc_sweep(Par *par, double *pos)
         {
             for (int d = 0; d < D; d++)
             {
-                new_positions[D * i + d] = newpos[d];
+                pos[D * i + d] = newpos[d];
             }
             naccept++;
         }
-        else
-        {
-            for (int d = 0; d < D; d++)
-            {
-                new_positions[D * i + d] = pos[D * i + d];
-            }
-        }
     }
 
-    memcpy(pos, new_positions, sizeof(new_positions));
     return naccept;
 }
