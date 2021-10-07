@@ -174,13 +174,12 @@ void run_simulation(Par *par, double *atoms)
 #ifdef VEL
   vel = atoms + D * par->n;
 #endif
-
 #ifdef VCORR
-  int max_corr_count = 100;
+  int max_corr_count = 50;
   vcorr_t vcorr = init_vcorr(par->n, max_corr_count);
   int curr_vcorr_count = 0;
   int delta_samps_vcorr_msr = 0.1/par->deltat;
-  printf("HEJ!!!!%d\n", delta_samps_vcorr_msr);
+  double t = 0.f;
 #endif
 
   // To store measured values
@@ -258,8 +257,10 @@ void run_simulation(Par *par, double *atoms)
             curr_vcorr_count += 1;
 
             double correlation = vcorr_calc_correlation(&vcorr, curr_vcorr_count);
-            fprintf(vcorr_output_file, "%g %g\n", (double)(isamp*nstep + istep)/delta_samps_vcorr_msr, correlation);
+            fprintf(vcorr_output_file, "%g %g %g\n", t, (double)(isamp*nstep + istep)/delta_samps_vcorr_msr, correlation);
           }
+
+          t += par->deltat;
           #endif
 
 	        step(par, atoms, force);
