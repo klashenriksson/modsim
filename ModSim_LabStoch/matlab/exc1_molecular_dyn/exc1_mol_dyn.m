@@ -19,12 +19,12 @@ edata_std = edata_standard_error * sqrt(NBlocks-1);
 figure(1);
 % use halve edata as the total width of error bar is 2*err originally
 errorbar(xdata,ydata,edata_standard_error./2);
-xlabel("Time", "FontSize", 18);
+xlabel("\Delta_t", "FontSize", 18);
 ylabel("Energy", "FontSize", 18);
 legend("E_{tot} w/ stderr as errorbar", "FontSize", 14);
 
 figure(2);
 errorbar(xdata,ydata,edata_std./2);
-xlabel("Time", "FontSize", 18);
+xlabel("\Delta_t", "FontSize", 18);
 ylabel("Energy", "FontSize", 18);
 legend("E_{tot} w/ std as errorbar", "FontSize", 14);

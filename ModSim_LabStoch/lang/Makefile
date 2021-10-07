@@ -7,10 +7,10 @@ VPATH = ../src		# list of directories that make should search
 
 
 # List of object files
-OBJS = sim.o ran.o common.o config.o
+OBJS = sim.o ran.o common.o config.o vcorr.o
 
 # Implicit rule - link together object files to an executable file
 sim: ${OBJS}
 
 # The object files also depend on some header files and Makefile
-${OBJS}: Makefile sim.h define.h ran.h
+${OBJS}: Makefile sim.h define.h ran.h vcorr.h

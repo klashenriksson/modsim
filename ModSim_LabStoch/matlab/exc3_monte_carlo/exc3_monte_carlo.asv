@@ -1,0 +1,5 @@
+alpha = 10.0;
+
+% potential energy, standard error
+data_mc = [-0.813144, 0.00095619];
+data_
