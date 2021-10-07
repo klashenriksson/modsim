@@ -4,6 +4,10 @@
 #include "define.h"
 #include "sim.h"
 
+#ifdef VCORR
+#include "vcorr.h"
+#endif
+
 
 double *pos, *vel, *force = NULL;
 
@@ -171,6 +175,14 @@ void run_simulation(Par *par, double *atoms)
   vel = atoms + D * par->n;
 #endif
 
+#ifdef VCORR
+  int max_corr_count = 100;
+  vcorr_t vcorr = init_vcorr(par->n, max_corr_count);
+  int curr_vcorr_count = 0;
+  int delta_samps_vcorr_msr = 0.1/par->deltat;
+  printf("HEJ!!!!%d\n", delta_samps_vcorr_msr);
+#endif
+
   // To store measured values
   if (!val) {
     int nval = sizeof(Measured) / sizeof(double);
@@ -185,6 +197,10 @@ void run_simulation(Par *par, double *atoms)
   // Open file for writing energy results
   filename = get_filename(par);		  // Get file name from parameters
   estream = fopen(add_strings("efile/", filename), "w");
+
+  #ifdef VCORR
+  FILE* vcorr_output_file = fopen(add_strings("log/", add_strings("vcorr_", add_strings(filename, ".txt"))), "w");
+  #endif
 
   measure(par, atoms, val);
   printf("Potential energy = %g\n", val->epot);
@@ -205,8 +221,9 @@ void run_simulation(Par *par, double *atoms)
       #ifdef MC
             mc_sweep(par, pos);
       #else    
-        for (istep = 0; istep < nstep; istep++)
+        for (istep = 0; istep < nstep; istep++) {
           step(par, atoms, force);
+        }
       #endif
     }
     printf("done\n");
@@ -234,7 +251,18 @@ void run_simulation(Par *par, double *atoms)
 #else
       // This advances one unit of time since nstep = 1/deltat
       for (istep = 0; istep < nstep; istep++) {
-	step(par, atoms, force);
+          #ifdef VCORR
+          if (istep % delta_samps_vcorr_msr == 0 && curr_vcorr_count <= max_corr_count)
+          {
+            vcorr_step(vel, &vcorr);
+            curr_vcorr_count += 1;
+
+            double correlation = vcorr_calc_correlation(&vcorr, curr_vcorr_count);
+            fprintf(vcorr_output_file, "%g %g\n", (double)(isamp*nstep + istep)/delta_samps_vcorr_msr, correlation);
+          }
+          #endif
+
+	        step(par, atoms, force);
      }	// End of "for (isamp = ..."
 #endif
       
@@ -275,6 +303,10 @@ void run_simulation(Par *par, double *atoms)
   printf("\n");
 
   if (estream) fclose(estream);
+
+  #ifdef VCORR
+  fclose(vcorr_output_file);
+  #endif
 
   // Write configuration to the named file in "conf/"
   write_conf(par, atoms, filename);
