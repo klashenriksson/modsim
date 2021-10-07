@@ -1,18 +1,19 @@
 clear
 
-dt_002 = load("data/0064_r0.500_T1.000_alpha0.00_dt002");
-dt_005 = load("data/0064_r0.500_T1.000_alpha0.00_dt005");
-dt_010 = load("data/0064_r0.500_T1.000_alpha0.00_dt010");
-dt_014 = load("data/0064_r0.500_T1.000_alpha0.00_dt014");
-dt_016 = load("data/0064_r0.500_T1.000_alpha0.00_dt016");
+data_dt_002 = [-0.299671, 5.67969e-05];
+data_dt_005 = [-0.296918, 0.000160269];
+data_dt_010 = [-0.299772, 0.000192871];
+data_dt_014 = [-0.292456, 0.00105202];
+data_dt_020 = [4.13966e+14, 3.1706e+06];
 
 N = 64;
+NBlocks = 50;
 
 % note we discard last as that is very divergent
 xdata = [0.002, 0.005, 0.010, 0.014];
-ydata = [mean(dt_002(:,2)), mean(dt_005(:,2)), mean(dt_010(:,2)), mean(dt_014(:,2))];
-edata_std = [std(dt_002(:,2)), std(dt_005(:,2)), std(dt_010(:,2)), std(dt_014(:,2))];
-edata_standard_error = edata_std ./sqrt(N);
+ydata = [data_dt_002(1), data_dt_005(1), data_dt_010(1), data_dt_014(1)];
+edata_standard_error = [data_dt_002(2), data_dt_005(2), data_dt_010(2), data_dt_014(2)];
+edata_std = edata_standard_error * sqrt(NBlocks-1);
 
 
 figure(1);
