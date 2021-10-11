@@ -8,6 +8,6 @@ Equilibrate: 1000...done
 
 Simulate 10 blocks x 1000 samples each: 1 2 3 4 5 6 7 8 9 10 
 Configuration with 64 particles written to conf/0064_r0.300_T1.000_alpha10.00_dt001
-Potential E: -0.81448 +/- 0.00234758
-Pressure   : 0.273956 +/- 0.000923843
+Potential E: -0.812391 +/- 0.00230368
+Pressure   : 0.273259 +/- 0.00134118
 Pressure for ideal gas: 0.3

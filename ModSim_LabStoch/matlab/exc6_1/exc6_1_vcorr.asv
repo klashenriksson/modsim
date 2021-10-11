@@ -1,0 +1,4 @@
+close all
+
+data_vcorr_alpha_0_01 = load("data/vcorr_0064_r0.200_T1.000_alpha0.01_dt010.txt");
+data_vcor_alpha_

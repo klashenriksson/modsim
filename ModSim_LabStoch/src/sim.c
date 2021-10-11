@@ -269,8 +269,8 @@ void run_simulation(Par *par, double *atoms)
       
      measure(par, atoms, val);
 
-     if (isamp % 100 == 0)	// Write energy from a single measurement, but not too often
-	    energy_print(estream, isamp + par->nsamp * iblock, val);
+     //if (isamp % 100 == 0)	// Write energy from a single measurement, but not too often
+	   energy_print(estream, isamp + par->nsamp * iblock, val);
 
       vsum->epot += val->epot;
       vsum->pressure += val->pressure;

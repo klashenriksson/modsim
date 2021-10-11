@@ -1,0 +1,11 @@
+Read from conf/0200_r0.250_T1.000 with data for 200 particles
+Gas with 200 particles at T = 0.9, rho = 0.25, L = 28.284,  b = 0.4
+Potential energy = -0.655878
+Equilibrate: 1000...done
+
+Simulate 10 blocks x 1000 samples each: 1 2 3 4 5 6 7 8 9 10 
+Configuration with 200 particles written to conf/0200_r0.250_T0.900
+Potential E: -0.734819 +/- 0.00380874
+Pressure   : 0.188552 +/- 0.000870015
+Pressure for ideal gas: 0.225
+Acceptance ratio = 0.599294

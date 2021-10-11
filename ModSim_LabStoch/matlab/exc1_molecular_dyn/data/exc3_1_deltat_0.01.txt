@@ -3,9 +3,14 @@ Read from conf/0064_r0.500_T1.000_start with data for 64 particles
 --- Molecular dynamics of a Lennard-Jones gas ---
 
 Gas with 64 particles at rho = 0.5, T = 1, alpha = 0, deltat = 0.01, L = 11.314
-HEJ!!!!10
 Potential energy = -1.33933
 Kinetic energy   = 1.04104
 Equilibrate: 1000...done
 
-Simulate 50 blocks x 1000 samples each: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 
+Simulate 50 blocks x 1000 samples each: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 
+Configuration with 64 particles written to conf/0064_r0.500_T1.000_alpha0.00_dt010
+Potential E: -1.30005 +/- 0.000316385
+Kinetic  E : 1.00028 +/- 0.000393176
+Total  E   : -0.299772 +/- 0.000192871
+Pressure   : 0.582911 +/- 0.00121253
+Pressure for ideal gas: 0.5

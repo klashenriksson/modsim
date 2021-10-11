@@ -28,3 +28,11 @@ errorbar(xdata,ydata,edata_std./2);
 xlabel("\Delta_t", "FontSize", 18);
 ylabel("Energy", "FontSize", 18);
 legend("E_{tot} w/ std as errorbar", "FontSize", 14);
+
+figure(3);
+errorbar(xdata,ydata,edata_standard_error./2);
+hold on
+errorbar(xdata,ydata,edata_std./2,'--');
+xlabel("\Delta_t", "FontSize", 18);
+ylabel("Energy", "FontSize", 18);
+legend("E_{tot} w/ stderr as errorbar", "E_{tot} w/ std as errorbar", "FontSize", 14);
