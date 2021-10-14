@@ -4,6 +4,7 @@
 #include "define.h"
 #include "sim.h"
 
+#define VCORR
 #ifdef VCORR
 #include "vcorr.h"
 #endif
@@ -174,14 +175,6 @@ void run_simulation(Par *par, double *atoms)
 #ifdef VEL
   vel = atoms + D * par->n;
 #endif
-#ifdef VCORR
-  int max_corr_count = 50;
-  vcorr_t vcorr = init_vcorr(par->n, max_corr_count);
-  int curr_vcorr_count = 0;
-  int delta_samps_vcorr_msr = 0.1/par->deltat;
-  double t = 0.f;
-#endif
-
   // To store measured values
   if (!val) {
     int nval = sizeof(Measured) / sizeof(double);
@@ -228,9 +221,15 @@ void run_simulation(Par *par, double *atoms)
     printf("done\n");
   }
 
+#ifdef VCORR
+  vcorr_t vcorr = init_vcorr(par->n, par->deltat, par->nblock * par->nsamp * nstep);
+  double t = 0.f;
+#endif
+
   
   printf("\nSimulate %d blocks x %d samples each: ", par->nblock, par->nsamp);
   fflush(stdout);
+
 
 
   // Production part
@@ -244,25 +243,12 @@ void run_simulation(Par *par, double *atoms)
 #endif
     
     for (isamp = 0; isamp < par->nsamp; isamp++) {
-
 #ifdef MC
       naccept += mc_sweep(par, pos);
 #else
       // This advances one unit of time since nstep = 1/deltat
       for (istep = 0; istep < nstep; istep++) {
-          #ifdef VCORR
-          if (istep % delta_samps_vcorr_msr == 0 && curr_vcorr_count <= max_corr_count)
-          {
-            vcorr_step(vel, &vcorr);
-            curr_vcorr_count += 1;
-
-            double correlation = vcorr_calc_correlation(&vcorr, curr_vcorr_count);
-            fprintf(vcorr_output_file, "%g %g %g\n", t, (double)(isamp*nstep + istep)/delta_samps_vcorr_msr, correlation);
-          }
-
-          t += par->deltat;
-          #endif
-
+          vcorr_step(vel, &vcorr);
 	        step(par, atoms, force);
      }	// End of "for (isamp = ..."
 #endif
@@ -302,6 +288,13 @@ void run_simulation(Par *par, double *atoms)
     printf("%d ", iblock + 1);	fflush(stdout);
   }	// End of loop "for (iblock..."
   printf("\n");
+
+  double velocity_corr[50];
+  vcorr_calc_correlation(&vcorr, velocity_corr);
+  for (int i = 0; i < 50; i++) { 
+    double delay = 0.1 * i;
+    fprintf(vcorr_output_file, "%g %g\n", delay, velocity_corr[i]);
+  }
 
   if (estream) fclose(estream);
 
