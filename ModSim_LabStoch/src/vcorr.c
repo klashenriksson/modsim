@@ -31,17 +31,17 @@ void vcorr_step(double* vel, vcorr_t* vcorr) {
     {
         for (int d = 0; d < D; d++)
         {
-            vcorr->circ_buff[index * D * i + d] = vel[i];
+            vcorr->circ_buff[index * D * i + d] = vel[D*i+d];
         }
     }
 
     vcorr->curr_slot += 1;
 }
 
-void vcorr_calc_correlation(vcorr_t* vcorr, double* out_corr_buff) {
-    for (int i = 0; i < 50; i++)
+void vcorr_calc_correlation(vcorr_t* vcorr, double* out_corr_buff, int n_delays, double n_delay_step_size) {
+    for (int i = 0; i < n_delays; i++)
     {
-        int steps_per_deci = 0.1/vcorr->time_step_size;
+        int steps_per_deci = n_delay_step_size/vcorr->time_step_size;
         double delay_time = i * 0.1;
         int time_iters = vcorr->n_time_slots - (int)(delay_time/vcorr->time_step_size);
 
