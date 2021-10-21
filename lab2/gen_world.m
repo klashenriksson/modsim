@@ -1,4 +1,4 @@
-function [world_graph, country_data] = gen_world(num_countries, gamma_countries, gamma_cities)
+function [world_graph, world] = gen_world(num_countries, gamma_countries, gamma_cities)
     country_adj_mat = gen_network(num_countries, gamma_countries);
     country_graph = graph(country_adj_mat);
     total_connections = numedges(country_graph);
@@ -83,4 +83,5 @@ function [world_graph, country_data] = gen_world(num_countries, gamma_countries,
 
     edge_table = table(world_edges, weights, 'VariableNames', {'EndNodes', 'Weight'});
     world_graph = graph(edge_table);
+
 end

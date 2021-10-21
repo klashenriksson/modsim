@@ -26,6 +26,9 @@ function [i,s] = stoch_sim_iteration(i,s,mu, beta, dt, opt)
         
         k_i_to_s = mu*dt;
         k_s_to_i = 1 - (1-beta_i*dt).^num_i;
+
+        k_i_to_s = min(k_i_to_s, 1);
+        k_s_to_i = min(k_s_to_i, 1);
         
         for infected = 1:num_i
            r = rand();

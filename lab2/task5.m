@@ -79,6 +79,7 @@ for i = 1:rho_iters
 %     hold on
 %     plot(sum(g10_4.Nodes.Population), sum(g10_4.Nodes.I)./sum(g10_4.Nodes.Population),'b*');
 end
+
 %%
 figure;
 plot3(1:6, V10_2(:,1), V10_2(:,2));
