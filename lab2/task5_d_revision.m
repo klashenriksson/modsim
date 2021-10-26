@@ -41,10 +41,20 @@ for i = 1:rho_iters
     g10_3 = siv_init_graph(g10_3,rho,initial_infect_fract);
     g10_4 = siv_init_graph(g10_4,rho,initial_infect_fract);
     
-    g10_2 = siv_stoch_sim_over_network(g10_2, mu,beta, tau, 0, t_end, iters, "", "Group");
-    g10_3 = siv_stoch_sim_over_network(g10_3, mu,beta, tau, 0, t_end, iters, "", "Group");
-    g10_4 = siv_stoch_sim_over_network(g10_4, mu,beta, tau, 0, t_end, iters, "", "Group");
+    [g10_2, s10_2] = siv_stoch_sim_over_network(g10_2, mu,beta, tau, 0, t_end, iters, "", "Group");
+    [g10_3, s10_3] = siv_stoch_sim_over_network(g10_3, mu,beta, tau, 0, t_end, iters, "", "Group");
+    [g10_4, s10_4] = siv_stoch_sim_over_network(g10_4, mu,beta, tau, 0, t_end, iters, "", "Group");
     
+    figure;
+    plot(s10_2(1,:), s10_2(2,:));
+    xlabel("rho " + rho)
+    figure;
+    plot(s10_3(1,:), s10_3(2,:));
+    xlabel("rho " + rho)
+    figure;
+    plot(s10_4(1,:), s10_4(2,:));
+    xlabel("rho " + rho)
+
     V10_2(i,:) = [rho, sum(g10_2.Nodes.I)./sum(g10_2.Nodes.Population)];
     V10_3(i,:) = [rho, sum(g10_3.Nodes.I)./sum(g10_3.Nodes.Population)];
     V10_4(i,:) = [rho, sum(g10_4.Nodes.I)./sum(g10_4.Nodes.Population)];
